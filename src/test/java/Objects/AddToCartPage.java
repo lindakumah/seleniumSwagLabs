@@ -5,15 +5,20 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
+import java.util.List;
+
 public class AddToCartPage {
     private final WebDriver driver;
     public AddToCartPage(WebDriver driver) {
         this.driver = driver;
     }
-    private WebElement getBackPackAddToCartBtn (){
+    public WebElement getBackPackAddToCartBtn (){
         return driver.findElement(By.id("add-to-cart-sauce-labs-backpack"));
     }
 
+    public WebElement getBoltShirtAddToCartBtn (){
+        return driver.findElement(By.id("add-to-cart-sauce-labs-bolt-t-shirt"));
+    }
     private WebElement getAddToCartBtn() {
         return driver.findElement(By.xpath("//a[@data-test='shopping-cart-link']"));
     }
@@ -42,6 +47,10 @@ public class AddToCartPage {
         return driver.findElement(By.id("finish"));
     }
     //add code to verify items in cart
+
+    private int getNumberOfItemsInCart(){
+        return driver.findElements(By.xpath("//div[@data-test='inventory-item']")).size();
+    }
     private String getCompleteCheckOutText() {
         return driver.findElement(By.xpath("//h2[@data-test='complete-header']")).getText();
     }
@@ -51,15 +60,27 @@ public class AddToCartPage {
         getBackPackAddToCartBtn().click();
     }
 
-    public void completeCheckOut (String firstName, String lastName, String postCode) {
+    public void addItemsToCart() {
+        getBackPackAddToCartBtn().click();
+        getBoltShirtAddToCartBtn().click();
+    }
+
+    public void checkOutItems (String firstName, String lastName, String postCode) {
         getAddToCartBtn().click();
         getCheckOutBtn().click();
         getCheckOutInfoFirstName().sendKeys(firstName);
         getCheckOutInfoLastName().sendKeys(lastName);
         getCheckOutInfoPostalCode().sendKeys(postCode);
         getContinueBtn().click();
+    }
+
+    public void checkTotalNumberOfItems(int number){
+        Assert.assertEquals(getNumberOfItemsInCart(), number);
+    }
+
+    public void completeCheckOut(String checkOutText){
         getFinishBtn().click();
-        Assert.assertEquals(getCompleteCheckOutText(), "Thank you for your order!");
+        Assert.assertEquals(getCompleteCheckOutText(), checkOutText);
     }
 
 }

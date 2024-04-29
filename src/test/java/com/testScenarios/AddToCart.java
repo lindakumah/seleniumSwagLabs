@@ -4,11 +4,14 @@ import Objects.AddToCartPage;
 import Objects.LoginPage;
 import Objects.LogoutPage;
 import Objects.MainPage;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddToCart {
     WebDriver driver = new ChromeDriver();
@@ -17,7 +20,7 @@ public class AddToCart {
     LogoutPage logout = new LogoutPage(driver);
     AddToCartPage addToCart = new AddToCartPage(driver);
 
-    @BeforeTest
+    @BeforeMethod
     public void beforeTest() {
         main.beforeTest();
         login.loginUser("standard_user", "secret_sauce");
@@ -26,7 +29,18 @@ public class AddToCart {
     @Test
     public void addToCartAndCheckout() {
         addToCart.addToCart();
-        addToCart.completeCheckOut("Rose", "Mensah", "233 Ghana");
+        addToCart.checkOutItems("Rose", "Davis", "233 Ghana");
+        addToCart.checkTotalNumberOfItems(1);
+        addToCart.completeCheckOut("Thank you for your order!");
+        logout.logoutUser();
+    }
+
+    @Test
+    public void addTwoItemsToCartAndCheckout() {
+        addToCart.addItemsToCart();
+        addToCart.checkOutItems("Rose", "Davis", "233 Ghana");
+        addToCart.checkTotalNumberOfItems(2);
+        addToCart.completeCheckOut("Thank you for your order!");
     }
 
     @AfterTest
